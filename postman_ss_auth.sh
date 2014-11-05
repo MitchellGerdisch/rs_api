@@ -1,0 +1,3 @@
+#!/bin/sh
+#curl -v -X GET -H "Cookie: rs_gbl=WzMsImVlZDQ0ZWQ4LTU1MzktMTFlNC1iMjAxLTIyMDAwYjM2OTBmOCIsInVzLTMiLDE0MTM0NjY4MDMsMTQxMzQ3NDAwMyx7InVzZXIiOjgxMDY0fSx7ImFjY291bnQiOjMwNjAxfV0AKwMpiVrB65iuyx4HymCRC7_GKrq7_8ASnPrRVg4XWGxTEvGSjG-CJyzIiCoA8YEFrNgH3GiCwuI8PJjqAwTN4Xrf_riXblwLwI5As-49IWzuKCyXKQaw8O1DQNbj2on0LyTGuknYYSYZ5yeUOxnSNCGxn_fg8b8BNTvy3S9nmm0%3D" -H "Cache-Control: no-cache" -H "Postman-Token: fb80ed5e-48bd-3ccc-b194-6607cb2abd5c" https://selfservice-3.rightscale.com/api/catalog/new_session?account_id=30601
+curl -v -X GET -H "Cache-Control: no-cache" -H "Postman-Token: fb80ed5e-48bd-3ccc-b194-6607cb2abd5c" https://selfservice-3.rightscale.com/api/catalog/new_session?account_id=30601
