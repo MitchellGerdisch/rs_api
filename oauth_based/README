@@ -1,0 +1,2 @@
+To use oauth-based API calls, you need to enable API credentials in Cloud Management portal.
+Settings->Account Settings->API Credentials.
