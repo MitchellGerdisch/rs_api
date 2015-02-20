@@ -13,16 +13,21 @@ my_token_endpoint=${1}
 my_refresh_token=${2}
 server_array_id=${3}
 base_uri=`echo ${my_token_endpoint} | cut -d"/" -f1,2,3`
+tmpfile="./$0.tmp"
 
-access_token=`curl --include \
+curl --include \
   -H "X-API-Version:1.5" \
   --request POST "$my_token_endpoint" \
   -d "grant_type=refresh_token" \
-  -d "refresh_token=$my_refresh_token" |
-grep "access_token" | 
-cut -d":" -f 3 | 
-cut -d"," -f1 | 
-sed 's/\"//g'`
+  -d "refresh_token=$my_refresh_token"  |
+sed 's/,/\
+/g' > $tmpfile
+access_token=`grep "access_token" $tmpfile |
+cut -d":" -f2 |
+sed 's/}//g' |
+sed 's/\"//g'` 
+
+rm $tmpfile
 
 curl --include \
      -H "X-API-Version:1.5" \

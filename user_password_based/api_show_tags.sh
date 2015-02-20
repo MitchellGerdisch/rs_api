@@ -10,10 +10,10 @@ fi
 shard=${1}
 base_uri="https://us-${shard}.rightscale.com"
 
-curl -i -b cookies.txt -H 'X-API-VERSION:1.5' \
+curl --verbose -i -b cookies.txt -H 'X-API-VERSION:1.5' \
 -X POST \
 -d resource_type=instances \
--d tags[]=databsae:active=true \
+-d tags[]=database:active=true \
 -d tags[]=rs_monitoring:state=active \
 -d match_all=false \
 ${base_uri}/api/tags/by_tag.xml
