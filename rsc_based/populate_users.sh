@@ -6,6 +6,8 @@ do
 	echo "Each line must represent one student and be a comma-separated list of the form:"
 	echo "FirstName,LastName,CompanyName,EmailAddress,PhoneNumber,Password"
 	echo ""
+	echo "NOTE: See http://support.rightscale.com/15-References/Dashboard_Help_Text/Library_users/ShowTabs/Password/index.html for password complexity documentation."
+	echo ""
 	
 	read filepath
 done
