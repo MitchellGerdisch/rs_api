@@ -2,7 +2,7 @@
 
 
 my_token_endpoint='https://us-3.rightscale.com/api/oauth2'
-my_refresh_token='758f52650ce9c713ae0c9e29fb82be1630c8e3be'
+my_refresh_token='TOKEN'
 
 base_uri=`echo ${my_token_endpoint} | cut -d"/" -f1,2,3`
 tmpfile="./$0.tmp"
