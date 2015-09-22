@@ -46,7 +46,7 @@ do
 		cut -d":" -f2`
 
 	# Give the user the observer and actor roles to allow the user to launch and manage the CAT
-	for role in observer actor 
+	for role in observer actor server_login
 	do
 		# redirect to /dev/null so that duplicate attempt messages are not echoed to the user
 		rsc --pp cm15 create /api/permissions "permission[role_title]=${role}" "permission[user_href]=${user_href}" &> /dev/null
