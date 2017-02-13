@@ -1,4 +1,0 @@
-Curtis,Yokubaitis,halliburton,curtis.yokubaitis@halliburton.com,6305551212,Training#1
-NatashaRodriguez,halliburton,natasha.rodriguez@halliburton.com,6305551212,Training#1
-Todd,Guppy,halliburton,todd.guppy@halliburton.com,6305551212,Training#1
-William,White,halliburton,william.white6@halliburton.com,6305551212,Training#1
