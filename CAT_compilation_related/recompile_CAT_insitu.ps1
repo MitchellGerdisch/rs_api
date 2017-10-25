@@ -31,7 +31,7 @@ $hdrs.Add("Content-Type", "application/json")
 
 $response = Invoke-RestMethod -Uri $api_end_point -Method Get -Headers $hdrs 
 
-#### Get CAT's Related HREF and Compilation HREF
+#### Get CAT's Related HREF and Compilation HREF and FILENAME
 $api_end_point = "https://selfservice-$shard.rightscale.com/api/designer/collections/$account_num/templates?filter[]=name==$cat_name"
 $hdrs.Add("X-Api-Version", "1.0")
 
@@ -39,6 +39,7 @@ $response = Invoke-RestMethod -Uri $api_end_point -Method Get -Headers $hdrs
 
 $cat_href = $response.href
 $compilation_href = $response.compilation_href
+$cat_filename = $response.filename
 
 ### Recompile the CAT in situ
 ### This queues the recompile job
@@ -66,11 +67,12 @@ Do {
 
 $compilation_href = $response.compilation_result.compilation_href
 
-### Now update with the newly compiled version
+### Now update with the newly compiled version and set the filename accordingly
 $api_end_point = "https://selfservice-$shard.rightscale.com$cat_href/actions/update_from_compilation"
 
 $msgbody = @{
     compilation_href=$compilation_href
+    filename=$cat_filename
 }
 $body = (ConvertTo-Json $msgbody)
     
