@@ -24,7 +24,7 @@ $response = Invoke-RestMethod -Uri $api_end_point -Method Post -Body $body -Head
 $access_token = $response.access_token
 
 #### Self-Service Authentication
-$api_end_point = "https://selfservice-3.rightscale.com/api/catalog/new_session?account_id=$account_num"
+$api_end_point = "https://selfservice-$shard.rightscale.com/api/catalog/new_session?account_id=$account_num"
 $hdrs = @{}
 $hdrs.Add("Authorization", "Bearer $access_token")
 $hdrs.Add("Content-Type", "application/json")
