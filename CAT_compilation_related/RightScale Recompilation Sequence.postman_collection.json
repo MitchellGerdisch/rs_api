@@ -1,0 +1,302 @@
+{
+	"info": {
+		"name": "RightScale Recompilation Sequence",
+		"_postman_id": "f5d98708-97c3-c24c-edd3-2b7c0a8fe964",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication - CM",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"ACCESS_TOKEN\", jsonData.access_token);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-API-Version",
+						"value": "1.5"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "grant_type",
+							"value": "refresh_token",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "refresh_token",
+							"value": "{{REFRESH_TOKEN}}",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://us-{{SHARD}}.rightscale.com/api/oauth2",
+					"protocol": "https",
+					"host": [
+						"us-{{SHARD}}",
+						"rightscale",
+						"com"
+					],
+					"path": [
+						"api",
+						"oauth2"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Authentication - SS",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ACCESS_TOKEN}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "https://selfservice-3.rightscale.com/api/catalog/new_session?account_id={{ACCOUNT_NUM}}",
+					"protocol": "https",
+					"host": [
+						"selfservice-3",
+						"rightscale",
+						"com"
+					],
+					"path": [
+						"api",
+						"catalog",
+						"new_session"
+					],
+					"query": [
+						{
+							"key": "account_id",
+							"value": "{{ACCOUNT_NUM}}",
+							"equals": true
+						}
+					]
+				},
+				"description": "Don't worry about the weird output and the 200 result. That's from the redirect. SS authentication does occur.\nRun the index catalog API to prove this to yourself."
+			},
+			"response": []
+		},
+		{
+			"name": "SS - Show CAT by Name (See Parameter Setting)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"COMPILATION_HREF\", jsonData[0].compilation_href);",
+							"postman.setEnvironmentVariable(\"CAT_HREF\", jsonData[0].href);",
+							"postman.setEnvironmentVariable(\"CAT_FILENAME\", jsonData[0].filename);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ACCESS_TOKEN}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Api-Version",
+						"value": "1.0"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "https://selfservice-{{SHARD}}.rightscale.com/api/designer/collections/{{ACCOUNT_NUM}}/templates?filter[]=name==Mitch Test CAT",
+					"protocol": "https",
+					"host": [
+						"selfservice-{{SHARD}}",
+						"rightscale",
+						"com"
+					],
+					"path": [
+						"api",
+						"designer",
+						"collections",
+						"{{ACCOUNT_NUM}}",
+						"templates"
+					],
+					"query": [
+						{
+							"key": "filter[]",
+							"value": "name==Mitch Test CAT",
+							"equals": true
+						}
+					]
+				},
+				"description": "Filters on CAT by name - set the name in the Parameter setting"
+			},
+			"response": []
+		},
+		{
+			"name": "SS - Recompile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable(\"COMPILATION_JOB_HREF\", postman.getResponseHeader(\"Location\"));",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ACCESS_TOKEN}}"
+					},
+					{
+						"key": "X-Api-Version",
+						"value": "1.0"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"infer_dependencies\": true\n}"
+				},
+				"url": {
+					"raw": "https://selfservice-{{SHARD}}.rightscale.com{{COMPILATION_HREF}}/actions/recompile",
+					"protocol": "https",
+					"host": [
+						"selfservice-{{SHARD}}",
+						"rightscale",
+						"com{{COMPILATION_HREF}}"
+					],
+					"path": [
+						"actions",
+						"recompile"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "SS - Compilation Job Status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"tests[\"Recompile was Successful\"] = data.status === \"successful\";",
+							"postman.setEnvironmentVariable(\"COMPILATION_HREF\", data.compilation_result.compilation_href);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ACCESS_TOKEN}}"
+					},
+					{
+						"key": "X-Api-Version",
+						"value": "1.0"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"infer_dependencies\": true\n}"
+				},
+				"url": {
+					"raw": "https://selfservice-{{SHARD}}.rightscale.com{{COMPILATION_JOB_HREF}}",
+					"protocol": "https",
+					"host": [
+						"selfservice-{{SHARD}}",
+						"rightscale",
+						"com{{COMPILATION_JOB_HREF}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "SS - Update Compiled CAT",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ACCESS_TOKEN}}"
+					},
+					{
+						"key": "X-Api-Version",
+						"value": "1.0"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"compilation_href\": \"{{COMPILATION_HREF}}\",\n\t\"filename\": \"{{CAT_FILENAME}}\"\n}"
+				},
+				"url": {
+					"raw": "https://selfservice-{{SHARD}}.rightscale.com{{CAT_HREF}}/actions/update_from_compilation",
+					"protocol": "https",
+					"host": [
+						"selfservice-{{SHARD}}",
+						"rightscale",
+						"com{{CAT_HREF}}"
+					],
+					"path": [
+						"actions",
+						"update_from_compilation"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
